@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIME</title>
+    <title>miku</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --transition-duration: 0.3s;
+            --progress-duration: 1s;
+        }
+
         body {
             font-family: 'JetBrains Mono', 'Inter', sans-serif;
             background-color: #ffffff; 
@@ -17,7 +22,7 @@
         }
 
         .progress-fill {
-            transition: width 1s ease-out;
+            transition: width var(--progress-duration) ease-out;
         }
 
         #miku-figure-img {
@@ -32,81 +37,110 @@
         
         .hover-card {
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.3s;
+            transition: all var(--transition-duration);
         }
         .hover-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1);
         }
+
+        .quote-fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        .quote-fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center">
-    <div id="quote-section" class="w-full max-w-4xl text-center mb-8 p-6 rounded-2xl transition duration-500 min-h-[6rem] flex items-center justify-center pt-16">
-        <p id="current-quote" class="text-xl italic text-gray-700 font-light tracking-wide"></p>
-    </div>
+    <main class="w-full max-w-4xl">
+        <!-- 引言区域 -->
+        <section id="quote-section" class="w-full text-center mb-8 p-6 rounded-2xl transition-all h-[10rem] flex items-center justify-center overflow-hidden" role="region" aria-live="polite" aria-label="每日引言">
+            <p id="current-quote" class="text-xl italic text-gray-700 font-light tracking-wide"></p>
+        </section>
 
-    <!-- 倒计时 -->
-    <div class="w-full max-w-4xl mb-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-blue-400/50 pb-2 flex items-center">
-        你说的对,但是
-        </h2>
-        <div id="countdown-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        </div>
-    </div>
-
-    <div class="w-full max-w-4xl mb-8 flex justify-center">
-        <div id="miku-action-card">
-            
-            <div class="flex flex-col items-center justify-center min-h-[120px]">
-                <img id="miku-figure-img" src="" alt="Miku Action">
+        <!-- 倒计时 -->
+        <section class="w-full mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-blue-400/50 pb-2 flex items-center">
+                你说的对,但是
+            </h2>
+            <div id="countdown-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="region" aria-label="倒计时列表">
             </div>
-        </div>
-    </div>
+        </section>
 
-    <div class="w-full max-w-4xl mb-8">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-blue-400/50 pb-2 flex items-center">
-        </h2>
-        
-        <!-- 进度条 1-->
-        <div id="progress-bar-daily" class="bg-white p-5 rounded-xl shadow-lg border border-gray-200 hover-card transition-all">
-            <p class="text-sm font-medium mb-3 flex justify-between items-center text-gray-600">
-                <span id="daily-progress-percent" class="font-bold text-gray-800">0%</span>
-            </p>
-            <div class="h-4 bg-gray-200 rounded-full overflow-hidden ring-1 ring-gray-100">
-                <div id="daily-progress-fill" class="progress-fill h-full bg-gradient-to-r from-blue-400 to-cyan-500 shadow-md" style="width: 0%;"></div>
+        <!-- Miku 动作卡片 -->
+        <section class="w-full mb-8 flex justify-center">
+            <div id="miku-action-card" class="mb-8 p-6 rounded-2xl shadow-xl transition-all duration-500 border border-gray-200" role="complementary" aria-label="Miku 状态">
+                <div class="flex flex-col items-center justify-center min-h-[120px]">
+                    <img id="miku-figure-img" src="" alt="Miku 当前状态">
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 进度条 2-->
-        <div id="progress-bar-weekly" class="bg-white p-5 rounded-xl shadow-lg border border-gray-200 hover-card transition-all">
-            <p class="text-sm font-medium mb-3 flex justify-between items-center text-gray-600">
-                <span id="weekly-progress-percent" class="font-bold text-gray-800">0%</span>
-            </p>
-            <div class="h-4 bg-gray-200 rounded-full overflow-hidden ring-1 ring-gray-100">
-                <div id="weekly-progress-fill" class="progress-fill h-full bg-gradient-to-r from-lime-400 to-green-500 shadow-md" style="width: 0%;"></div>
+        <!-- 长期进度条 -->
+        <section class="w-full mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b border-blue-400/50 pb-2 flex items-center">
+            </h2>
+            <div id="progress-bar-longterm" class="bg-white p-5 rounded-xl shadow-lg border border-gray-200 hover-card transition-all">
+                <p class="text-sm font-medium mb-3 flex justify-between items-center text-gray-600">
+                    <span id="longterm-progress-percent" class="font-bold text-gray-800">0%</span>
+                </p>
+                <div class="h-4 bg-gray-200 rounded-full overflow-hidden ring-1 ring-gray-100" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div id="longterm-progress-fill" class="progress-fill h-full bg-gradient-to-r from-orange-400 to-red-500 shadow-md" style="width: 0%;"></div>
+                </div>
             </div>
-        </div>
-
-        <!-- 进度条 3 -->
-        <div id="progress-bar-longterm" class="bg-white p-5 rounded-xl shadow-lg border border-gray-200 hover-card transition-all">
-            <p class="text-sm font-medium mb-3 flex justify-between items-center text-gray-600">
-                <span id="longterm-progress-percent" class="font-bold text-gray-800">0%</span>
-            </p>
-            <div class="h-4 bg-gray-200 rounded-full overflow-hidden ring-1 ring-gray-100">
-                <div id="longterm-progress-fill" class="progress-fill h-full bg-gradient-to-r from-orange-400 to-red-500 shadow-md" style="width: 0%;"></div>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
 
     <script>
 
-        const countdownTargets = [
-            
-            { name: "高考", date: "2026-06-06" },
-            
-        ];
-        const quotes = [
+        // ==================== 配置 ====================
+        const CONFIG = {
+            // 时间配置
+            DAILY_START_HOUR: 6,
+            DAILY_END_HOUR: 22,
+            WEEKLY_TRIGGER_HOUR: 14,
+            WEEKLY_TRIGGER_DAY: 6, // 周六
+
+            // 日期配置
+            LONG_TERM_START: "2025-11-29T00:00:00",
+            LONG_TERM_END: "2026-06-07T00:00:00",
+
+            // API & 资源
+            GITHUB_QUOTES_URL: "https://git.zxymiku.top/https://raw.githubusercontent.com/zxymiku/c309/main/quotes.txt",
+            FETCH_CACHE: 'no-store',
+
+            // Miku 动作映射
+            MIKU_ACTIONS: {
+                read: { img: "read.png", name: "读书", bgClass: "bg-pink-50/50 shadow-pink-100" },
+                write: { img: "write.png", name: "写字", bgClass: "bg-green-50/50 shadow-green-100" },
+                sleep: { img: "sleep.png", name: "睡觉", bgClass: "bg-blue-50/50 shadow-blue-100" }
+            },
+
+            // 更新间隔（毫秒）
+            UPDATE_INTERVAL: 10000,
+            QUOTE_INTERVAL: 60000,
+            QUOTE_FADE_DURATION: 500,
+            AUTO_REFRESH_INTERVAL: 60 * 60 * 1000 // 每小时自动刷新
+        };
+
+        // ==================== 数据 ====================
+        const DATA = {
+            countdownTargets: [
+                { name: "高考", date: "2026-06-06" }
+            ],
+            quotes: [
                 "她是一串数据,而我也只是一堆细胞.",
                 "Galgame里不是这样的.",
                 "梦想是成为Galgame高手.",
@@ -197,209 +231,305 @@
                 "If I'm a circle then I will give you my circumference.",
                 "If I'm a sine wave then you can sit on all my tangents.",
                 "If I approach infinity then you can be my limitations.",
-            ];
-
-        const githubQuotesTxtUrl = "https://git.zxymiku.top/https://raw.githubusercontent.com/zxymiku/c309/main/quotes.txt";
-        let hasLoadedGithubQuotes = false;
-
-        async function loadQuotesFromGitHub() {
-            if (hasLoadedGithubQuotes) return;
-            hasLoadedGithubQuotes = true;
-
-            try {
-                const response = await fetch(githubQuotesTxtUrl, { cache: 'no-store' });
-                if (!response.ok) {
-                    console.warn('无法从GitHub获取引语文本，使用内置引语。', response.status);
-                    return;
-                }
-
-                const text = await response.text();
-                const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
-                if (lines.length > 0) {
-                    quotes.length = 0;
-                    quotes.push(...lines);
-                    console.log(`成功加载 GitHub 引语，共 ${lines.length} 条`);
-                    updateQuote();
-                }
-            } catch (error) {
-                console.warn('载入GitHub引语失败，使用内置引语：', error);
-            }
-        }
-
-        const mikuImages = {
-            "read": "read.png",
-            "sleep": "sleep.png",
-            "write": "write.png"
+            ],
+            hasLoadedGithubQuotes: false,
+            currentQuoteIndex: -1
         };
-        let currentQuoteIndex = -1;
-        function calculateDaysRemaining(targetDateStr) {
-            const targetDate = new Date(targetDateStr);
-            const now = new Date();
-            targetDate.setHours(0, 0, 0, 0);
-            now.setHours(0, 0, 0, 0);
-            const diffTime = targetDate.getTime() - now.getTime();
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        }
 
-        // 计算进度百分比
-        function calculateProgress(total, elapsed) {
-            if (elapsed < 0) return 0;
-            if (elapsed >= total) return 100;
-            return Math.min(100, (elapsed / total) * 100);
-        }
-
-        // 更新进度条
-        function updateProgressBars(now) {
-            const dailyStart = new Date(now).setHours(6, 0, 0, 0);
-            const dailyEnd = new Date(now).setHours(22, 0, 0, 0);
-            const dailyTotal = dailyEnd - dailyStart;
+        // ==================== DOM 工具 ====================
+        const DOM = {
+            getById(id) {
+                return document.getElementById(id);
+            },
             
-            let dailyP = 0;
-            if (now.getHours() < 6) dailyP = 0;
-            else if (now.getHours() >= 22) dailyP = 100;
-            else dailyP = calculateProgress(dailyTotal, now.getTime() - dailyStart);
+            setAttributeIfExists(elementId, attr, value) {
+                const el = this.getById(elementId);
+                if (el) el.setAttribute(attr, value);
+            },
 
-            document.getElementById('daily-progress-percent').innerText = `${dailyP.toFixed(1)}%`;
-            document.getElementById('daily-progress-fill').style.width = `${dailyP}%`;
-
-            const day = now.getDay(); 
-            let cycleStart = new Date(now);
-            cycleStart.setHours(14, 0, 0, 0);
-            
-            let daysToSub = (day + 1) % 7; 
-            if (day === 6 && now.getHours() >= 14) daysToSub = 0;
-            else if (day === 6 && now.getHours() < 14) daysToSub = 7;
-            else daysToSub = day + 1;
-
-            cycleStart.setDate(now.getDate() - daysToSub);
-            while(cycleStart.getDay() !== 6) cycleStart.setDate(cycleStart.getDate() - 1);
-
-            let cycleEnd = new Date(cycleStart);
-            cycleEnd.setDate(cycleStart.getDate() + 6); 
-            cycleEnd.setHours(17, 40, 0, 0);
-
-            const weeklyP = calculateProgress(cycleEnd - cycleStart, now - cycleStart);
-            
-            document.getElementById('weekly-progress-percent').innerText = `${weeklyP.toFixed(1)}%`;
-            document.getElementById('weekly-progress-fill').style.width = `${weeklyP}%`;
-
-            const longStart = new Date("2025-11-29T00:00:00").getTime();
-            const longEnd = new Date("2026-06-07T00:00:00").getTime(); 
-            const longP = calculateProgress(longEnd - longStart, now.getTime() - longStart);
-
-            document.getElementById('longterm-progress-percent').innerText = `${longP.toFixed(1)}%`;
-            document.getElementById('longterm-progress-fill').style.width = `${longP}%`;
-        }
-        function updateMikuAction(hour) {
-            let actionKey = 'read'; 
-            let actionName = '读书';
-            let bgClass = 'bg-gray-100';
-            
-            if (hour >= 22 || hour < 6) {
-                actionKey = 'sleep';
-                actionName = '睡觉';
-                bgClass = 'bg-blue-50/50 shadow-blue-100';
-            } else if (hour >= 8 && hour < 22) {
-                actionKey = 'write';
-                actionName = '写字';
-                bgClass = 'bg-green-50/50 shadow-green-100';
-            } else if (hour >= 6 && hour < 8) {
-                actionKey = 'read';
-                actionName = '读书';
-                bgClass = 'bg-pink-50/50 shadow-pink-100';
-            } else {
-                actionKey = 'write';
-                actionName = '写字';
-                bgClass = 'bg-indigo-50/50 shadow-indigo-100';
+            setInnerIfExists(elementId, text) {
+                const el = this.getById(elementId);
+                if (el) el.innerText = text;
             }
-            const card = document.getElementById('miku-action-card');
-            const img = document.getElementById('miku-figure-img');
-            const nameSpan = document.getElementById('miku-action-name');
+        };
 
-            // 修复：正确处理nameSpan元素
-            if (nameSpan) {
-                nameSpan.innerText = actionName;
-            } else {
-                // 如果页面上还没有该元素，则不执行任何操作，因为HTML中已经有这个元素了
+        // ==================== 时间计算 ====================
+        const TimeCalc = {
+            calculateDaysRemaining(targetDateStr) {
+                const targetDate = new Date(targetDateStr);
+                const now = new Date();
+                targetDate.setHours(0, 0, 0, 0);
+                now.setHours(0, 0, 0, 0);
+                const diffTime = targetDate.getTime() - now.getTime();
+                return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            },
+
+            calculateProgress(total, elapsed) {
+                if (elapsed < 0) return 0;
+                if (elapsed >= total) return 100;
+                return Math.min(100, (elapsed / total) * 100);
             }
+        };
 
-            // 修复：始终更新图片和属性
-            img.src = mikuImages[actionKey];
-            img.setAttribute('data-action', actionKey);
-            card.className = 'mb-8 p-6 rounded-2xl shadow-xl transition-all duration-500 border border-gray-200';
-        }
+        // ==================== 进度条更新 ====================
+        const ProgressBar = {
+            updateBars(now) {
+                this.updateDailyProgress(now);
+                this.updateWeeklyProgress(now);
+                this.updateLongTermProgress(now);
+            },
 
-        function updateQuote() {
-            const newIndex = Math.floor(Math.random() * quotes.length);
-            currentQuoteIndex = newIndex;
-            const quoteEl = document.getElementById('current-quote');
-            quoteEl.style.opacity = 0;
-            setTimeout(() => {
-                quoteEl.innerText = quotes[currentQuoteIndex];
-                quoteEl.style.opacity = 1;
-            }, 500);
-        }
-
-        function renderCountdowns() {
-            const container = document.getElementById('countdown-container');
-            container.innerHTML = ''; 
-
-            countdownTargets.forEach(target => {
-                const days = calculateDaysRemaining(target.date);
-                let bgColorClass = 'bg-green-50';
-                let borderColorClass = 'border-green-300';
-                let statusText = '🗓️ 剩余';
-                let textColorClass = 'text-green-600';
-
-                if (days < 0) {
-                    bgColorClass = 'bg-gray-100';
-                    borderColorClass = 'border-gray-300';
-                    statusText = '已过去';
-                    textColorClass = 'text-gray-500';
-                } else if (days === 0) {
-                    bgColorClass = 'bg-red-100';
-                    borderColorClass = 'border-red-400';
-                    statusText = '就是';
-                    textColorClass = 'text-red-600';
-                } else if (days <= 7) {
-                    bgColorClass = 'bg-red-50';
-                    borderColorClass = 'border-red-300';
-                    statusText = '仅剩';
-                    textColorClass = 'text-red-500';
-                } else if (days <= 30) {
-                    bgColorClass = 'bg-yellow-50';
-                    borderColorClass = 'border-yellow-300';
-                    textColorClass = 'text-yellow-600';
+            updateDailyProgress(now) {
+                const dailyStart = new Date(now).setHours(CONFIG.DAILY_START_HOUR, 0, 0, 0);
+                const dailyEnd = new Date(now).setHours(CONFIG.DAILY_END_HOUR, 0, 0, 0);
+                const dailyTotal = dailyEnd - dailyStart;
+                
+                let dailyPercent = 0;
+                if (now.getHours() < CONFIG.DAILY_START_HOUR) {
+                    dailyPercent = 0;
+                } else if (now.getHours() >= CONFIG.DAILY_END_HOUR) {
+                    dailyPercent = 100;
+                } else {
+                    dailyPercent = TimeCalc.calculateProgress(dailyTotal, now.getTime() - dailyStart);
                 }
 
-                const cardHtml = `
-                    <div class="p-5 rounded-xl shadow-md border ${borderColorClass} ${bgColorClass} hover-card transition-all">
-                        <h3 class="text-lg font-semibold mb-1 text-gray-800">${target.name}</h3>
-                        <p class="text-xs text-gray-500 mb-3 font-mono">${target.date}</p>
-                        <div class="flex items-baseline">
-                            <span class="text-sm ${textColorClass}">${statusText} </span>
-                            <span class="text-3xl font-bold text-gray-900 mr-2">${Math.abs(days)}</span>
-                            <span class="text-sm ${textColorClass}">天</span>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += cardHtml;
-            });
-        }
+                DOM.setInnerIfExists('daily-progress-percent', `${dailyPercent.toFixed(1)}%`);
+                const progressFill = document.getElementById('daily-progress-fill');
+                if (progressFill) progressFill.style.width = `${dailyPercent}%`;
+            },
 
+            updateWeeklyProgress(now) {
+                const day = now.getDay();
+                let cycleStart = new Date(now);
+                cycleStart.setHours(CONFIG.WEEKLY_TRIGGER_HOUR, 0, 0, 0);
+                
+                let daysToSub = (day + 1) % 7;
+                if (day === CONFIG.WEEKLY_TRIGGER_DAY && now.getHours() >= CONFIG.WEEKLY_TRIGGER_HOUR) {
+                    daysToSub = 0;
+                } else if (day === CONFIG.WEEKLY_TRIGGER_DAY && now.getHours() < CONFIG.WEEKLY_TRIGGER_HOUR) {
+                    daysToSub = 7;
+                } else {
+                    daysToSub = day + 1;
+                }
+
+                cycleStart.setDate(now.getDate() - daysToSub);
+                while(cycleStart.getDay() !== CONFIG.WEEKLY_TRIGGER_DAY) {
+                    cycleStart.setDate(cycleStart.getDate() - 1);
+                }
+
+                let cycleEnd = new Date(cycleStart);
+                cycleEnd.setDate(cycleStart.getDate() + 6);
+                cycleEnd.setHours(17, 40, 0, 0);
+
+                const weeklyPercent = TimeCalc.calculateProgress(cycleEnd - cycleStart, now - cycleStart);
+                
+                DOM.setInnerIfExists('weekly-progress-percent', `${weeklyPercent.toFixed(1)}%`);
+                const progressFill = document.getElementById('weekly-progress-fill');
+                if (progressFill) progressFill.style.width = `${weeklyPercent}%`;
+            },
+
+            updateLongTermProgress(now) {
+                const longStart = new Date(CONFIG.LONG_TERM_START).getTime();
+                const longEnd = new Date(CONFIG.LONG_TERM_END).getTime();
+                const longPercent = TimeCalc.calculateProgress(longEnd - longStart, now.getTime() - longStart);
+
+                DOM.setInnerIfExists('longterm-progress-percent', `${longPercent.toFixed(1)}%`);
+                const progressFill = document.getElementById('longterm-progress-fill');
+                if (progressFill) progressFill.style.width = `${longPercent}%`;
+            }
+        };
+
+        // ==================== Miku 动作 ====================
+        const MikuAction = {
+            _lastAction: null,
+
+            getActionByHour(hour) {
+                if (hour >= CONFIG.DAILY_END_HOUR || hour < CONFIG.DAILY_START_HOUR) {
+                    return { key: 'sleep', ...CONFIG.MIKU_ACTIONS.sleep };
+                } else if (hour >= 8) {
+                    return { key: 'write', ...CONFIG.MIKU_ACTIONS.write };
+                } else {
+                    return { key: 'read', ...CONFIG.MIKU_ACTIONS.read };
+                }
+            },
+
+            update(hour) {
+                const action = this.getActionByHour(hour);
+                if (action.key === this._lastAction) return;
+                this._lastAction = action.key;
+
+                const img = DOM.getById('miku-figure-img');
+                if (img) {
+                    img.src = action.img;
+                    img.setAttribute('data-action', action.key);
+                }
+            }
+        };
+
+        // ==================== 引言 ====================
+        const QuoteManager = {
+            async loadFromGitHub() {
+                if (DATA.hasLoadedGithubQuotes) return;
+                DATA.hasLoadedGithubQuotes = true;
+
+                try {
+                    const response = await fetch(CONFIG.GITHUB_QUOTES_URL, { cache: CONFIG.FETCH_CACHE });
+                    if (!response.ok) {
+                        console.warn(`无法从GitHub获取引语 (${response.status})`);
+                        return;
+                    }
+
+                    const text = await response.text();
+                    const lines = text.split(/\r?\n/)
+                        .map(line => line.trim())
+                        .filter(line => line.length > 0);
+                    
+                    if (lines.length > 0) {
+                        DATA.quotes.length = 0;
+                        DATA.quotes.push(...lines);
+                        console.log(`成功加载 GitHub 引语，共 ${lines.length} 条`);
+                        this.update();
+                    }
+                } catch (error) {
+                    console.warn('载入GitHub引语失败：', error);
+                }
+            },
+
+            update() {
+                if (DATA.quotes.length === 0) return;
+                let newIndex = Math.floor(Math.random() * DATA.quotes.length);
+                if (newIndex === DATA.currentQuoteIndex && DATA.quotes.length > 1) {
+                    newIndex = (newIndex + 1) % DATA.quotes.length;
+                }
+                
+                DATA.currentQuoteIndex = newIndex;
+                const quoteEl = DOM.getById('current-quote');
+                
+                if (quoteEl) {
+                    quoteEl.classList.remove('quote-fade-in');
+                    quoteEl.classList.add('quote-fade-out');
+                    
+                    setTimeout(() => {
+                        quoteEl.innerText = DATA.quotes[DATA.currentQuoteIndex];
+                        quoteEl.classList.remove('quote-fade-out');
+                        quoteEl.classList.add('quote-fade-in');
+                    }, CONFIG.QUOTE_FADE_DURATION);
+                }
+            }
+        };
+
+        // ==================== 倒计时卡片 ====================
+        const CountdownCards = {
+            _lastRenderedHtml: '',
+
+            getStatusByDays(days) {
+                if (days < 0) {
+                    return {
+                        bgClass: 'bg-gray-100',
+                        borderClass: 'border-gray-300',
+                        textClass: 'text-gray-500',
+                        status: '已过去'
+                    };
+                } else if (days === 0) {
+                    return {
+                        bgClass: 'bg-red-100',
+                        borderClass: 'border-red-400',
+                        textClass: 'text-red-600',
+                        status: '就是'
+                    };
+                } else if (days <= 7) {
+                    return {
+                        bgClass: 'bg-red-50',
+                        borderClass: 'border-red-300',
+                        textClass: 'text-red-500',
+                        status: '仅剩'
+                    };
+                } else if (days <= 30) {
+                    return {
+                        bgClass: 'bg-yellow-50',
+                        borderClass: 'border-yellow-300',
+                        textClass: 'text-yellow-600',
+                        status: '剩余'
+                    };
+                } else {
+                    return {
+                        bgClass: 'bg-green-50',
+                        borderClass: 'border-green-300',
+                        textClass: 'text-green-600',
+                        status: '剩余'
+                    };
+                }
+            },
+
+            render() {
+                const container = DOM.getById('countdown-container');
+                if (!container) return;
+
+                let html = '';
+                DATA.countdownTargets.forEach(target => {
+                    const days = TimeCalc.calculateDaysRemaining(target.date);
+                    const status = this.getStatusByDays(days);
+
+                    html += `
+                        <div class="p-5 rounded-xl shadow-md border ${status.borderClass} ${status.bgClass} hover-card transition-all">
+                            <h3 class="text-lg font-semibold mb-1 text-gray-800">${target.name}</h3>
+                            <p class="text-xs text-gray-500 mb-3 font-mono">${target.date}</p>
+                            <div class="flex items-baseline">
+                                <span class="text-sm ${status.textClass}">${status.status} </span>
+                                <span class="text-3xl font-bold text-gray-900 mr-2">${Math.abs(days)}</span>
+                                <span class="text-sm ${status.textClass}">天</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (html !== this._lastRenderedHtml) {
+                    container.innerHTML = html;
+                    this._lastRenderedHtml = html;
+                }
+            }
+        };
+
+        // ==================== 主循环 ====================
         function mainLoop() {
             const now = new Date();
-            updateProgressBars(now);
-            updateMikuAction(now.getHours());
-            renderCountdowns();
+            ProgressBar.updateBars(now);
+            MikuAction.update(now.getHours());
+            CountdownCards.render();
         }
-        renderCountdowns();
-        loadQuotesFromGitHub();
-        updateQuote();
-        mainLoop();
 
-        setInterval(mainLoop, 1000);
-        setInterval(updateQuote, 60000);
+        // ==================== 自动刷新 ====================
+        const AutoRefresh = {
+            start() {
+                setTimeout(() => {
+                    location.reload();
+                }, CONFIG.AUTO_REFRESH_INTERVAL);
+            }
+        };
+
+        // ==================== 初始化 ====================
+        function init() {
+            const quoteEl = DOM.getById('current-quote');
+            if (quoteEl) {
+                quoteEl.classList.add('quote-fade-in');
+            }
+
+            CountdownCards.render();
+            QuoteManager.loadFromGitHub();
+            QuoteManager.update();
+            mainLoop();
+
+            setInterval(mainLoop, CONFIG.UPDATE_INTERVAL);
+            setInterval(() => QuoteManager.update(), CONFIG.QUOTE_INTERVAL);
+            AutoRefresh.start();
+        }
+
+        // 页面加载完成后初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
 
     </script>
 </body>
